@@ -5,12 +5,23 @@ var mouse = {
     x: 0,
     y: 0
 }
-var ball = {
+
+const key = {
+    left: false,
+    up: false,
+    right: false,
+    down: false
+}
+
+var car = {
     x: canvas.width / 2,
     y: canvas.height / 2,
-    radius: 10,
-    speedX: 5,
-    speedY: 7
+    speed: 0,
+    pic: document.createElement("img"),
+    picLoaded: false,
+    ang: 0,
+    angSpeed: 0.04,
+    velocity: 0.3
 }
 
 var tile = {
@@ -35,15 +46,7 @@ var tile = {
         1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
         1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1,
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
-    ],
-    /*w: canvas.width / 20,
-    get h() { return this.w },
-    gap: canvas.width / 400,
-    array: [],
-    x: 0,
-    y: 0,
-    get row() { return canvas.height / this.h },
-    get col() { return canvas.width / this.w }*/
+    ]
 }
 
 function mouseMove(e) {
@@ -53,22 +56,106 @@ function mouseMove(e) {
     mouse.y = e.clientY - rect.top - root.scrollTop;
 }
 
-function ballReset() {
+function keyPress(e) {
+    e.preventDefault();
+    if (e.key == "ArrowLeft" || e.key == "A" || e.key == "a")
+        key.left = true;
+    if (e.key == "ArrowRight" || e.key == "D" || e.key == "d")
+        key.right = true;
+    if (e.key == "ArrowUp" || e.key == "W" || e.key == "w")
+        key.up = true;
+    if (e.key == "ArrowDown" || e.key == "S" || e.key == "s")
+        key.down = true;
+    /*
+    e.key == "ArrowLeft" || e.key == "A" || e.key == "a" ? key.left = true : 0;
+    e.key == "ArrowRight" || e.key == "D" || e.key == "d" ? key.right = true : 0;
+    e.key == "ArrowUp" || e.key == "W" || e.key == "w" ? key.up = true : 0;
+    e.key == "ArrowDown" || e.key == "S" || e.key == "s" ? key.down = true : 0;
+    */
+    /*
+    switch (e.key) {
+        case "a":
+        case "A":
+        case "ArrowLeft":
+            key.left = true;
+            break;
+        case "d":
+        case "D":
+        case "ArrowRight":
+            key.right = true;
+            break;
+        case "w":
+        case "W":
+        case "ArrowUp":
+            key.up = true;
+            break;
+        case "s":
+        case "S":
+        case "ArrowDown":
+            key.down = true;
+            break;
+    }*/
+}
+
+function keyRelease(e) {
+    if (e.key == "ArrowLeft" || e.key == "A" || e.key == "a")
+        key.left = false;
+    if (e.key == "ArrowRight" || e.key == "D" || e.key == "d")
+        key.right = false;
+    if (e.key == "ArrowUp" || e.key == "W" || e.key == "w")
+        key.up = false;
+    if (e.key == "ArrowDown" || e.key == "S" || e.key == "s")
+        key.down = false;
+    /*
+    switch (e.key) {
+        case "a":
+        case "A":
+        case "ArrowLeft":
+            key.left = false;
+            break;
+        case "d":
+        case "D":
+        case "ArrowRight":
+            key.right = false;
+            break;
+        case "w":
+        case "W":
+        case "ArrowUp":
+            key.up = false;
+            break;
+        case "s":
+        case "S":
+        case "ArrowDown":
+            key.down = false;
+            break;
+    }
+    */
+}
+
+window.onload = function () {
+    carReset();
+    setInterval(update, 30);
+    canvas.addEventListener("mousemove", mouseMove);
+    car.pic.onload = function () {
+        car.picLoaded = true;
+    }
+    car.pic.src = "car.png";
+
+    document.addEventListener("keydown", keyPress);
+    document.addEventListener("keyup", keyRelease);
+}
+
+function carReset() {
     for (var i = 0; i < tile.row; i++) {
         for (var j = 0; j < tile.col; j++) {
             if (tile.array[tileIndex(i, j)] == 2) {
                 tile.array[tileIndex(i, j)] = 0;
-                ball.x = j * tile.w + tile.w / 2 + 1;
-                ball.y = i * tile.h + tile.w / 2 + 1;
+                car.ang = -Math.PI / 2;
+                car.x = j * tile.w + tile.w / 2 + 1;
+                car.y = i * tile.h + tile.w / 2 + 1;
             }
         }
     }
-}
-
-window.onload = function () {
-    ballReset();
-    setInterval(update, 30);
-    canvas.addEventListener("mousemove", mouseMove)
 }
 
 function update() {
@@ -77,24 +164,43 @@ function update() {
 }
 
 function moveAll() {
-    //  ballMovement();
-    ballBoundsCollision();
+    carMovement();
     tileCollision();
 }
-function ballMovement() {
-    ball.x += ball.speedX;
-    ball.y += ball.speedY;
-}
 
-function ballBoundsCollision() {
-    if (ball.x + ball.radius > canvas.width && ball.speedX > 0)
-        ball.speedX *= -1;
-    if (ball.x - ball.radius < 0 && ball.speedX < 0)
-        ball.speedX *= -1;
-    if (ball.y + ball.radius > canvas.height)
-        ball.speedY *= -1;
-    if (ball.y - ball.radius < 0 && ball.speedY < 0)
-        ball.speedY *= -1;
+function carMovement() {
+    car.speed *= 0.97;
+    console.log(car.speed);
+    if (key.left)
+        car.ang -= car.angSpeed;
+    if (key.right)
+        car.ang += car.angSpeed;
+    if (key.up)
+        car.speed += car.velocity;
+    if (key.down)
+        car.speed -= car.velocity;
+    /*
+    switch (true) {
+        case key.left:
+            car.ang -= car.angSpeed;
+            break;
+            case key.right:
+                car.ang += car.angSpeed;
+                break;
+                case key.up:
+                    car.speed += car.velocity;
+                    break;
+                    case key.down:
+            car.speed -= car.velocity;
+            break;
+            case !key.up && !key.down && (car.speed > 0 || car.speed < 0):
+            car.speed *= 0.90;
+            break;
+        }
+     */
+
+car.x += Math.cos(car.ang) * car.speed;
+car.y += Math.sin(car.ang) * car.speed;
 }
 
 function tileIndex(currentRow, currentCol) {
@@ -102,37 +208,14 @@ function tileIndex(currentRow, currentCol) {
 }
 
 function tileCollision() {
-    var ballTileCol = Math.floor(ball.x / tile.w);
-    var ballTileRow = Math.floor(ball.y / tile.h);
-    if (ballTileCol >= 0 && ballTileCol < tile.col &&
-        ballTileRow >= 0 && ballTileRow < tile.row) {
-        if (tile.array[tileIndex(ballTileRow, ballTileCol)] == 1) {
-
-            var prevBallPosX = ball.x - ball.speedX;
-            var prevBallPosY = ball.y - ball.speedY;
-            var prevTileCol = Math.floor(prevBallPosX / tile.w);
-            var prevTileRow = Math.floor(prevBallPosY / tile.h);
-
-            var bothTestsFailed = true;
-
-            if (prevTileCol != ballTileCol) {
-                var adjTileSide = tileIndex(ballTileRow, prevTileCol);
-                if (tile.array[adjTileSide] == 0) {
-                    ball.speedX *= -1;
-                    bothTestsFailed = false;
-                }
-            }
-            if (prevTileRow != ballTileRow) {
-                var adjTileTopBot = tileIndex(prevTileRow, ballTileCol)
-                if (tile.array[adjTileTopBot] == 0) {
-                    ball.speedY *= -1;
-                    bothTestsFailed = false;
-                }
-            }
-            if (bothTestsFailed) {
-                ball.speedX *= -1;
-                ball.speedY *= -1;
-            }
+    var carTileCol = Math.floor(car.x / tile.w);
+    var carTileRow = Math.floor(car.y / tile.h);
+    if (carTileCol >= 0 && carTileCol < tile.col &&
+        carTileRow >= 0 && carTileRow < tile.row) {
+        if (tile.array[tileIndex(carTileRow, carTileCol)]) {
+            car.x -= Math.cos(car.ang) * car.speed;
+            car.y -= Math.sin(car.ang) * car.speed;
+            car.speed *= -0.5;
         }
     }
 }
@@ -140,14 +223,23 @@ function tileCollision() {
 function drawAll() {
     drawRect(0, 0, canvas.width, canvas.height, "black");
     drawTiles();
-    drawCircle(ball.x, ball.y, ball.radius, "white");
+    drawBitmapCenteredWithAngle(car.pic, car.x, car.y, car.ang);
+    //drawCircle(car.x, car.y, car.radius, "white");
     drawCoords();
 }
+
+function drawBitmapCenteredWithAngle(pic, x, y, ang) {
+    ctx.save()
+    ctx.translate(x, y);
+    ctx.rotate(ang);
+    if (car.picLoaded)
+        ctx.drawImage(pic, -pic.width / 2, -pic.height / 2);
+    ctx.restore();
+}
+
 function drawTiles() {
-    //  console.log("here");
     for (var i = 0; i < tile.row; i++)
         for (var j = 0; j < tile.col; j++) {
-            //console.log(tile.array[tileIndex(i, j)]);
             if (tile.array[tileIndex(i, j)] == 1)
                 drawRect(tile.w * j + 1, tile.h * i + 1, tile.w - tile.gap, tile.h - tile.gap, "blue");
         }
