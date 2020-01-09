@@ -53,7 +53,8 @@ function drawTiles() {
             var arrayIndex = tile.Index(i, j);
             var tileType = tile.array[arrayIndex];
             var item = tile.type;
-            var useImg;
+            var useImg = item[Object.keys(item)[tileType]].img;
+            /*
             switch (tileType) {
                 case item.empty.code:
                     useImg = item.empty.img;
@@ -69,7 +70,7 @@ function drawTiles() {
                     break;
                 case item.trees.code:
                     useImg = item.trees.img;
-            }
+            }*/
             ctx.drawImage(useImg, tile.w * j, tile.h * i);
             //drawRect(tile.w * j + tile.gap / 2, tile.h * i + tile.gap / 2, tile.w - tile.gap, tile.h - tile.gap, tile.wallColor);}
 
