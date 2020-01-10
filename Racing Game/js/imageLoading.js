@@ -36,8 +36,8 @@ function loadImages() {
     //for (var i = 0; i < imgList.length; i++)
     //  beginLoadingImage(imgList[i].name, imgList[i].file);
 
-    car.pic = document.createElement("img");
-    beginLoadingImage(car.pic, "car.png");
+    blueCar.pic = document.createElement("img");
+    beginLoadingImage(blueCar.pic, "car.png");
 
     for (var item in tile.type) {
         // console.log(tile.type[item]);

@@ -16,7 +16,7 @@ window.onload = function () {
 
 function imageLoadingDoneSoStartGame() {
     setupInput();
-    car.Reset();
+    blueCar.Reset();
     setInterval(update, 30);
 }
 
@@ -32,8 +32,8 @@ function update() {
 }
 
 function moveAll() {
-    car.Movement();
-    tile.Collision();
+    blueCar.Movement();
+    tile.Collision(blueCar);
 }
 
 function drawAll() {
@@ -44,16 +44,18 @@ function drawAll() {
 }
 
 function drawCar() {
-    drawBitmapCenteredWithAngle(car.pic, car.x, car.y, car.ang);
+    drawBitmapCenteredWithAngle(blueCar.pic, blueCar.x, blueCar.y, blueCar.ang);
 }
 
 function drawTiles() {
-    for (var i = 0; i < tile.row; i++)
+    var arrayIndex = 0;
+    var tileX = 0;
+    var tileY = 0;
+    for (var i = 0; i < tile.row; i++) {
         for (var j = 0; j < tile.col; j++) {
-            var arrayIndex = tile.Index(i, j);
+            //var arrayIndex = tile.Index(i, j);
             var tileType = tile.array[arrayIndex];
-            var item = tile.type;
-            var useImg = item[Object.keys(item)[tileType]].img;
+            var useImg = tile.type[Object.keys(tile.type)[tileType]].img;
             /*
             switch (tileType) {
                 case item.empty.code:
@@ -71,8 +73,12 @@ function drawTiles() {
                 case item.trees.code:
                     useImg = item.trees.img;
             }*/
-            ctx.drawImage(useImg, tile.w * j, tile.h * i);
+            ctx.drawImage(useImg, tileX, tileY);
+            tileX += tile.w;
+            arrayIndex++;
             //drawRect(tile.w * j + tile.gap / 2, tile.h * i + tile.gap / 2, tile.w - tile.gap, tile.h - tile.gap, tile.wallColor);}
-
         }
+        tileX = 0;
+        tileY += tile.h;
+    }
 }

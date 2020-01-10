@@ -91,7 +91,69 @@ const key = {
     },
 }
 
-var car = {
+class car {
+    x = document.getElementById("gameCanvas").width / 2;
+    y = document.getElementById("gameCanvas").height / 2;
+    speed = 0;
+    ang = 0;
+    angSpeed = 0.06;
+    velocity = 0.3;
+    friction = 0.97;
+    collisionFriction = -0.5;
+    minimumSpeed = 0.5;
+
+    Reset = function () {
+        for (var i = 0; i < tile.row; i++) {
+            for (var j = 0; j < tile.col; j++) {
+                if (tile.array[tile.Index(i, j)] == tile.type.playerLocation.code) {
+                    tile.array[tile.Index(i, j)] = tile.type.empty.code;
+                    this.ang = -Math.PI / 2;
+                    this.x = j * tile.w + tile.w / 2;
+                    this.y = i * tile.h + tile.w / 2;
+                }
+            }
+        }
+    }
+
+    Movement = function () {
+        this.speed *= this.friction;
+
+        if (key.up)
+            this.speed += this.velocity;
+        if (key.down)
+            this.speed -= this.velocity;
+        if (Math.abs(this.speed) > this.minimumSpeed) {
+            if (key.left)
+                this.ang -= this.angSpeed;
+            if (key.right)
+                this.ang += this.angSpeed;
+        }
+        /*
+        switch (true) {
+            case key.left:
+                this.ang -= this.angSpeed;
+                break;
+                case key.right:
+                    this.ang += this.angSpeed;
+                    break;
+                    case key.up:
+                        this.speed += this.velocity;
+                        break;
+                        case key.down:
+                this.speed -= this.velocity;
+                break;
+                case !key.up && !key.down && (this.speed > 0 || this.speed < 0):
+                this.speed *= 0.90;
+                break;
+            }
+         */
+
+        this.x += Math.cos(this.ang) * this.speed;
+        this.y += Math.sin(this.ang) * this.speed;
+    }
+}
+
+/*car = {
     x: document.getElementById("gameCanvas").width / 2,
     y: document.getElementById("gameCanvas").height / 2,
     speed: 0,
@@ -107,51 +169,70 @@ var car = {
             for (var j = 0; j < tile.col; j++) {
                 if (tile.array[tile.Index(i, j)] == tile.type.playerLocation.code) {
                     tile.array[tile.Index(i, j)] = tile.type.empty.code;
-                    car.ang = -Math.PI / 2;
-                    car.x = j * tile.w + tile.w / 2;
-                    car.y = i * tile.h + tile.w / 2;
+                    this.ang = -Math.PI / 2;
+                    this.x = j * tile.w + tile.w / 2;
+                    this.y = i * tile.h + tile.w / 2;
                 }
             }
         }
     },
 
     Movement: function () {
-        car.speed *= car.friction;
+        this.speed *= this.friction;
 
         if (key.up)
-            car.speed += car.velocity;
+            this.speed += this.velocity;
         if (key.down)
-            car.speed -= car.velocity;
-        if (Math.abs(car.speed) > car.minimumSpeed) {
+            this.speed -= this.velocity;
+        if (Math.abs(this.speed) > this.minimumSpeed) {
             if (key.left)
-                car.ang -= car.angSpeed;
+                this.ang -= this.angSpeed;
             if (key.right)
-                car.ang += car.angSpeed;
+                this.ang += this.angSpeed;
         }
         /*
         switch (true) {
             case key.left:
-                car.ang -= car.angSpeed;
+                this.ang -= this.angSpeed;
                 break;
                 case key.right:
-                    car.ang += car.angSpeed;
+                    this.ang += this.angSpeed;
                     break;
                     case key.up:
-                        car.speed += car.velocity;
+                        this.speed += this.velocity;
                         break;
                         case key.down:
-                car.speed -= car.velocity;
+                this.speed -= this.velocity;
                 break;
-                case !key.up && !key.down && (car.speed > 0 || car.speed < 0):
-                car.speed *= 0.90;
+                case !key.up && !key.down && (this.speed > 0 || this.speed < 0):
+                this.speed *= 0.90;
                 break;
             }
-         */
+         * /
 
-        car.x += Math.cos(car.ang) * car.speed;
-        car.y += Math.sin(car.ang) * car.speed;
+        this.x += Math.cos(this.ang) * this.speed;
+        this.y += Math.sin(this.ang) * this.speed;
     },
 }
+
+*/
+
+/* Object copy methods : 
+
+==SHALLOW COPY== (these two methods are short and very useful one, but it won't work out when you're having nested object in your object to be copied)
+
+var clonedObj = { ...obj };
+
+var clonedObj = Object.assign({}, obj);
+
+==DEEP copy== (deepClone object won't have any effect if the main source object obj is modified and vice-versa)
+--it does not copy methods => better use classes
+
+let deepClone = JSON.parse(JSON.stringify(obj));
+*/
+
+blueCar = new car;
+
 
 var tile = {
     w: 40,
@@ -208,16 +289,16 @@ var tile = {
         return tile.col * currentRow + currentCol;
     },
 
-    Collision: function () {
-        var carTileCol = Math.floor(car.x / tile.w);
-        var carTileRow = Math.floor(car.y / tile.h);
+    Collision: function (player) {
+        var carTileCol = Math.floor(player.x / tile.w);
+        var carTileRow = Math.floor(player.y / tile.h);
 
         if (carTileCol >= 0 && carTileCol < tile.col &&
             carTileRow >= 0 && carTileRow < tile.row) {
             if (tile.array[tile.Index(carTileRow, carTileCol)] != tile.type.empty.code) {
-                car.x -= Math.cos(car.ang) * car.speed;
-                car.y -= Math.sin(car.ang) * car.speed;
-                car.speed *= car.collisionFriction;
+                player.x -= Math.cos(player.ang) * player.speed;
+                player.y -= Math.sin(player.ang) * player.speed;
+                player.speed *= player.collisionFriction;
             }
         }
     },
