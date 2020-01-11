@@ -3,12 +3,14 @@ var canvas, ctx;
 blueCar = new Car;
 greenCar = new Car;
 
+var winner;
+
 window.onload = function () {
     canvas = document.getElementById("gameCanvas");
     ctx = canvas.getContext("2d");
 
     drawRect(0, 0, canvas.width, canvas.height, "black"); //loadscreen
-    drawText("LOADING IMAGES", canvas.width / 2, canvas.height / 2, "white");
+    drawText("LOADING IMAGES", canvas.width / 2, canvas.height / 2, "white", "bold 50px Comic Sans");
 
     loadImages();
     /*
@@ -57,6 +59,10 @@ function drawAll() {
     drawTiles();
     blueCar.Draw();
     greenCar.Draw();
+    if (winner.timer-- > 0) {
+        drawText("THE " + winner.color + " CAR WINS!", canvas.width / 2 - 2, canvas.height / 2 + 2, "black", "bold 50px Comic Sans"); // black offset
+        drawText("THE " + winner.color + " CAR WINS!", canvas.width / 2, canvas.height / 2, winner.color, "bold 50px Comic Sans");
+    }
     //drawCoords();
 }
 

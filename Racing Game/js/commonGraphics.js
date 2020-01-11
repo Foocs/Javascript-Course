@@ -26,7 +26,10 @@ function drawCoords() {
     ctx.fillText(rowCoords + "." + colCoords + ":" + tile.Index(rowCoords, colCoords), mouse.x + 2, mouse.y - 2);
 }
 
-function drawText(text, x, y, color) {
+function drawText(text, x, y, color, font) {
     ctx.fillStyle = color;
+    ctx.font = font
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
     ctx.fillText(text, x, y);
 }

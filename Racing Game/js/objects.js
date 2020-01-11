@@ -105,6 +105,11 @@ const key = {
     },
 }
 
+var winner = {
+    color: undefined,
+    timer: 0
+}
+
 class Car {
     x = document.getElementById("gameCanvas").width / 2;
     y = document.getElementById("gameCanvas").height / 2;
@@ -311,7 +316,7 @@ var tile = {
         1, 0, 0, 1, 0, 0, 0, 0, 1, 4, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1,
         1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 5, 0, 0, 1, 0, 0, 1,
         1, 0, 0, 1, 0, 0, 5, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-        1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 5, 0, 0, 1, 0, 0, 1, 0, 0, 1,
+        1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 5, 0, 0, 1, 0, 0, 1, 0, 0, 1,
         1, 2, 2, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 5, 0, 0, 1,
         1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
         0, 3, 0, 0, 0, 0, 1, 4, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
@@ -320,8 +325,8 @@ var tile = {
 
     ],
     array: [],
+    //wallColor: "blue",
 
-    wallColor: "blue",
     type: {
         empty: { code: 0, file: "empty.png" },
         wall: { code: 1, file: "wall.png" },
@@ -345,7 +350,9 @@ var tile = {
             tileTypeHere = tile.array[tile.Index(carTileRow, carTileCol)];
 
             if (tileTypeHere == tile.type.goal.code) {
-                console.log("The " + (player == greenCar ? "green " : "blue ") + "car wins!");
+                winner.color = player == greenCar ? "GREEN" : "BLUE";
+                winner.timer = 5 * 30; //5 seconds, 30 frames
+
                 loadLevel(tile.levelOne);
             }
             else if (tileTypeHere != tile.type.empty.code) {
