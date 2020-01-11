@@ -10,20 +10,29 @@ var mouse = {
 */
 
 const key = {
-    left: false,
-    up: false,
-    right: false,
-    down: false,
+
+    ButtonHelper: function (e, bool) {
+        if (e.key == "ArrowLeft")
+            blueCar.key.left = bool;
+        if (e.key == "ArrowRight")
+            blueCar.key.right = bool;
+        if (e.key == "ArrowDown")
+            blueCar.key.down = bool;
+        if (e.key == "ArrowUp")
+            blueCar.key.up = bool;
+        
+        if (e.key == "A" || e.key == "a")
+            greenCar.key.left = bool;
+        if (e.key == "D" || e.key == "d")
+            greenCar.key.right = bool;
+        if (e.key == "W" || e.key == "w")
+            greenCar.key.up = bool;
+        if (e.key == "S" || e.key == "s")
+            greenCar.key.down = bool;
+    },
     Press: function (e) {
         e.preventDefault();
-        if (e.key == "ArrowLeft" || e.key == "A" || e.key == "a")
-            key.left = true;
-        if (e.key == "ArrowRight" || e.key == "D" || e.key == "d")
-            key.right = true;
-        if (e.key == "ArrowUp" || e.key == "W" || e.key == "w")
-            key.up = true;
-        if (e.key == "ArrowDown" || e.key == "S" || e.key == "s")
-            key.down = true;
+        key.ButtonHelper(e, true)
         /*
         e.key == "ArrowLeft" || e.key == "A" || e.key == "a" ? key.left = true : 0;
         e.key == "ArrowRight" || e.key == "D" || e.key == "d" ? key.right = true : 0;
@@ -56,14 +65,7 @@ const key = {
     },
 
     Release: function (e) {
-        if (e.key == "ArrowLeft" || e.key == "A" || e.key == "a")
-            key.left = false;
-        if (e.key == "ArrowRight" || e.key == "D" || e.key == "d")
-            key.right = false;
-        if (e.key == "ArrowUp" || e.key == "W" || e.key == "w")
-            key.up = false;
-        if (e.key == "ArrowDown" || e.key == "S" || e.key == "s")
-            key.down = false;
+        key.ButtonHelper(e, false);
         /*
         switch (e.key) {
             case "a":
@@ -91,7 +93,7 @@ const key = {
     },
 }
 
-class car {
+class Car {
     x = document.getElementById("gameCanvas").width / 2;
     y = document.getElementById("gameCanvas").height / 2;
     speed = 0;
@@ -102,6 +104,13 @@ class car {
     collisionFriction = -0.5;
     minimumSpeed = 0.5;
 
+    key = {
+        left: false,
+        up: false,
+        right: false,
+        down: false
+    }
+
     Reset = function () {
         for (var i = 0; i < tile.row; i++) {
             for (var j = 0; j < tile.col; j++) {
@@ -110,6 +119,7 @@ class car {
                     this.ang = -Math.PI / 2;
                     this.x = j * tile.w + tile.w / 2;
                     this.y = i * tile.h + tile.w / 2;
+                    return;
                 }
             }
         }
@@ -118,14 +128,14 @@ class car {
     Movement = function () {
         this.speed *= this.friction;
 
-        if (key.up)
+        if (this.key.up)
             this.speed += this.velocity;
-        if (key.down)
+        if (this.key.down)
             this.speed -= this.velocity;
         if (Math.abs(this.speed) > this.minimumSpeed) {
-            if (key.left)
+            if (this.key.left)
                 this.ang -= this.angSpeed;
-            if (key.right)
+            if (this.key.right)
                 this.ang += this.angSpeed;
         }
         /*
@@ -150,6 +160,11 @@ class car {
 
         this.x += Math.cos(this.ang) * this.speed;
         this.y += Math.sin(this.ang) * this.speed;
+
+        tile.Collision(this);
+    }
+    Draw = function () {
+        drawBitmapCenteredWithAngle(this.pic, this.x, this.y, this.ang);
     }
 }
 
@@ -231,8 +246,6 @@ var clonedObj = Object.assign({}, obj);
 let deepClone = JSON.parse(JSON.stringify(obj));
 */
 
-blueCar = new car;
-
 
 var tile = {
     w: 40,
@@ -268,7 +281,7 @@ var tile = {
         1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 5, 0, 0, 1, 0, 0, 1,
         1, 0, 0, 1, 0, 0, 5, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1,
         1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 5, 0, 0, 1, 0, 0, 1, 0, 0, 1,
-        1, 0, 2, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 5, 0, 0, 1,
+        1, 2, 2, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 5, 0, 0, 1,
         1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1,
         0, 3, 0, 0, 0, 0, 1, 4, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1,
         0, 3, 0, 0, 0, 0, 1, 4, 4, 1, 1, 1, 4, 4, 1, 0, 0, 0, 1, 1,
@@ -277,8 +290,8 @@ var tile = {
     ],
     wallColor: "blue",
     type: {
-        empty: { code: 0, file: "empty5.png" },
-        wall: { code: 1, file: "wall1.png" },
+        empty: { code: 0, file: "empty.png" },
+        wall: { code: 1, file: "wall.png" },
         playerLocation: { code: 2 },
         goal: { code: 3, file: "goal.png" },
         trees: { code: 4, file: "trees.png" },

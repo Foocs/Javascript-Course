@@ -1,5 +1,8 @@
 var canvas, ctx;
 
+blueCar = new Car;
+greenCar = new Car;
+
 window.onload = function () {
     canvas = document.getElementById("gameCanvas");
     ctx = canvas.getContext("2d");
@@ -17,6 +20,7 @@ window.onload = function () {
 function imageLoadingDoneSoStartGame() {
     setupInput();
     blueCar.Reset();
+    greenCar.Reset();
     setInterval(update, 30);
 }
 
@@ -33,18 +37,15 @@ function update() {
 
 function moveAll() {
     blueCar.Movement();
-    tile.Collision(blueCar);
+    greenCar.Movement();
 }
 
 function drawAll() {
     drawRect(0, 0, canvas.width, canvas.height, "black");
     drawTiles();
-    drawCar();
+    blueCar.Draw();
+    greenCar.Draw();
     //drawCoords();
-}
-
-function drawCar() {
-    drawBitmapCenteredWithAngle(blueCar.pic, blueCar.x, blueCar.y, blueCar.ang);
 }
 
 function drawTiles() {
