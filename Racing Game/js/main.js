@@ -8,6 +8,8 @@ window.onload = function () {
     ctx = canvas.getContext("2d");
 
     drawRect(0, 0, canvas.width, canvas.height, "black"); //loadscreen
+    drawText("LOADING IMAGES", canvas.width / 2, canvas.height / 2, "white");
+
     loadImages();
     /*
     car.pic.onload = function () {
@@ -19,9 +21,19 @@ window.onload = function () {
 
 function imageLoadingDoneSoStartGame() {
     setupInput();
+
+    loadLevel(tile.levelOne);
+
+    blueCar.SetupInput(37, 38, 39, 40) // ArrowLeft, ArrowUp, ArrowRight, ArrowDown
+    greenCar.SetupInput(65, 87, 68, 83); // A, W, D, S  
+
+    setInterval(update, 30);
+}
+
+function loadLevel(level) {
+    tile.array = level.slice(); // array copy without memory reference
     blueCar.Reset();
     greenCar.Reset();
-    setInterval(update, 30);
 }
 
 function setupInput() {

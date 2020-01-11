@@ -25,3 +25,8 @@ function drawCoords() {
     var colCoords = Math.floor(mouse.x / tile.w);
     ctx.fillText(rowCoords + "." + colCoords + ":" + tile.Index(rowCoords, colCoords), mouse.x + 2, mouse.y - 2);
 }
+
+function drawText(text, x, y, color) {
+    ctx.fillStyle = color;
+    ctx.fillText(text, x, y);
+}

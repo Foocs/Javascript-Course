@@ -36,8 +36,6 @@ function loadImages() {
     //for (var i = 0; i < imgList.length; i++)
     //  beginLoadingImage(imgList[i].name, imgList[i].file);
 
-    blueCar.pic = document.createElement("img");
-    greenCar.pic = document.createElement("img");
     beginLoadingImage(blueCar.pic, "blueCar.png");
     beginLoadingImage(greenCar.pic, "greenCar.png");
 

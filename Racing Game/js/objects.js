@@ -11,7 +11,16 @@ var mouse = {
 
 const key = {
 
-    ButtonHelper: function (e, bool) {
+    KeyPressHelper: function (e, bool, car) {
+        if (e.keyCode == car.input.left)
+            car.key.left = bool;
+        if (e.keyCode == car.input.up)
+            car.key.up = bool;
+        if (e.keyCode == car.input.right)
+            car.key.right = bool;
+        if (e.keyCode == car.input.down)
+            car.key.down = bool;
+        /*
         if (e.key == "ArrowLeft")
             blueCar.key.left = bool;
         if (e.key == "ArrowRight")
@@ -20,7 +29,7 @@ const key = {
             blueCar.key.down = bool;
         if (e.key == "ArrowUp")
             blueCar.key.up = bool;
-        
+
         if (e.key == "A" || e.key == "a")
             greenCar.key.left = bool;
         if (e.key == "D" || e.key == "d")
@@ -29,10 +38,12 @@ const key = {
             greenCar.key.up = bool;
         if (e.key == "S" || e.key == "s")
             greenCar.key.down = bool;
+            */
     },
     Press: function (e) {
         e.preventDefault();
-        key.ButtonHelper(e, true)
+        key.KeyPressHelper(e, true, blueCar);
+        key.KeyPressHelper(e, true, greenCar);
         /*
         e.key == "ArrowLeft" || e.key == "A" || e.key == "a" ? key.left = true : 0;
         e.key == "ArrowRight" || e.key == "D" || e.key == "d" ? key.right = true : 0;
@@ -65,7 +76,8 @@ const key = {
     },
 
     Release: function (e) {
-        key.ButtonHelper(e, false);
+        key.KeyPressHelper(e, false, blueCar);
+        key.KeyPressHelper(e, false, greenCar);
         /*
         switch (e.key) {
             case "a":
@@ -104,6 +116,8 @@ class Car {
     collisionFriction = -0.5;
     minimumSpeed = 0.5;
 
+    pic = document.createElement("img");
+
     key = {
         left: false,
         up: false,
@@ -111,7 +125,24 @@ class Car {
         down: false
     }
 
+    input = {
+        left: undefined,
+        up: undefined,
+        right: undefined,
+        down: undefined
+    }
+
+    SetupInput = function (left, up, right, down) {
+        this.input.left = left;
+        this.input.up = up;
+        this.input.right = right;
+        this.input.down = down;
+    }
+
     Reset = function () {
+
+        this.speed = 0;
+
         for (var i = 0; i < tile.row; i++) {
             for (var j = 0; j < tile.col; j++) {
                 if (tile.array[tile.Index(i, j)] == tile.type.playerLocation.code) {
@@ -253,7 +284,7 @@ var tile = {
     gap: 2,
     row: 15,
     col: 20,
-    array: [
+    levelOne: [
         /*
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -288,6 +319,8 @@ var tile = {
         1, 1, 1, 1, 1, 1, 1, 4, 4, 4, 4, 4, 4, 4, 1, 1, 1, 1, 1, 1
 
     ],
+    array: [],
+
     wallColor: "blue",
     type: {
         empty: { code: 0, file: "empty.png" },
@@ -308,12 +341,23 @@ var tile = {
 
         if (carTileCol >= 0 && carTileCol < tile.col &&
             carTileRow >= 0 && carTileRow < tile.row) {
-            if (tile.array[tile.Index(carTileRow, carTileCol)] != tile.type.empty.code) {
-                player.x -= Math.cos(player.ang) * player.speed;
-                player.y -= Math.sin(player.ang) * player.speed;
-                player.speed *= player.collisionFriction;
+
+            tileTypeHere = tile.array[tile.Index(carTileRow, carTileCol)];
+
+            if (tileTypeHere == tile.type.goal.code) {
+                console.log("The " + (player == greenCar ? "green " : "blue ") + "car wins!");
+                loadLevel(tile.levelOne);
+            }
+            else if (tileTypeHere != tile.type.empty.code) {
+                this.CollisionKnockback(player);
             }
         }
     },
+
+    CollisionKnockback: function (player) {
+        player.x -= Math.cos(player.ang) * player.speed;
+        player.y -= Math.sin(player.ang) * player.speed;
+        player.speed *= player.collisionFriction;
+    }
 
 }
