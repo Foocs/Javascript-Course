@@ -20,7 +20,7 @@ function drawCircle(x, y, radius, color) {
 
 function drawCoords() {
     ctx.fillStyle = "orange";
-    ctx.font = "bold 15px Comic Sans"
+    ctx.font = "bold 15px Comic Sans";
     var rowCoords = Math.floor(mouse.y / block.h);
     var colCoords = Math.floor(mouse.x / block.w);
     ctx.fillText(rowCoords + "." + colCoords + ":" + block.Index(rowCoords, colCoords), mouse.x + 2, mouse.y - 2);
