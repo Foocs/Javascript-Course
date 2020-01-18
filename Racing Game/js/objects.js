@@ -123,6 +123,9 @@ class Car {
 
     pic = document.createElement("img");
 
+    width = 16;
+    height = 30;
+
     key = {
         left: false,
         up: false,
@@ -340,9 +343,17 @@ var tile = {
         return tile.col * currentRow + currentCol;
     },
 
+    CollisionPoint: function (coordinatePoint, imgDimension, dimension) {
+        return Math.floor((coordinatePoint - imgDimension) / dimension)
+    },
+
     Collision: function (player) {
-        var carTileCol = Math.floor(player.x / tile.w);
-        var carTileRow = Math.floor(player.y / tile.h);
+        //  for (i = player.x - player.width / 2; i < player.x + player.width / 2; i += player.width) {
+
+        //     for (j = player.y - player.height / 2; j < player.y + player.height / 2; j += player.height) {
+
+        var carTileCol = Math.floor((player.x) / tile.w); //this.CollisionPoint(player.x, 0, tile.w); 
+        var carTileRow = Math.floor((player.y) / tile.h); //this.CollisionPoint(player.y, 0, tile.h); //Math
 
         if (carTileCol >= 0 && carTileCol < tile.col &&
             carTileRow >= 0 && carTileRow < tile.row) {
