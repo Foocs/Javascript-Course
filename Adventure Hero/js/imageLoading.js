@@ -4,7 +4,7 @@ function beginLoadingImage(img, fileName) {
 
 function loadImages() {
 
-    beginLoadingImage(player.pic, "blueCar.png");
+    beginLoadingImage(player.pic, "shovelHero.png");
 
     for (var item in block.type) {
 

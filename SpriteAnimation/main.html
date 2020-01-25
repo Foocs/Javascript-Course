@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<body>
+    <canvas id="gameCanvas" width="800" height="600" style="border:1px solid #d3d3d3;"></canvas>
+    <script>
+        window.onload = function () {
+            var canvas = document.getElementById("gameCanvas");
+            var ctx = canvas.getContext('2d');
+
+            var sprite = new Image();
+            sprite.src = "img/sprite.png";
+            var i = 0;
+            var interval = 1;
+
+            document.addEventListener("keypress", function (e) {
+                if (e.key == "D") {
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(sprite, i, 0, 256, 256, 100, 100, 256, 256);
+                    i += 256;
+                    i >= 256 * 6 ? i = 0 : 0;
+                }
+            });
+            /*
+            sprite.onload = function () {
+                setInterval(() => {
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(sprite, i, 0, 256, 256, 100, 100, 256, 256);
+                    i += 256;
+                    i >= 256 * 6 ? i = 0 : 0;
+                }, 100)
+            }
+            */
+        }
+    </script>
+</body>
+
+</html>

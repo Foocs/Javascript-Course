@@ -14,7 +14,7 @@ window.onload = function () {
 }
 
 function startGame() {
-    
+
     setupInput();
 
     loadLevel(block.levelOne);
@@ -46,7 +46,7 @@ function drawAll() {
     player.Draw();
     if (player.winTimer-- > 0) {
         drawText("YOU WIN!", canvas.width / 2 - 2, canvas.height / 2 + 2, "black", "bold 50px Comic Sans"); // black offset
-        drawText("YOU WIN!", canvas.width / 2, canvas.height / 2, "blue", "bold 50px Comic Sans");
+        drawText("YOU WIN!", canvas.width / 2, canvas.height / 2, "black", "bold 50px Comic Sans");
     }
 }
 
@@ -57,9 +57,10 @@ function drawBlocks() {
     for (var i = 0; i < block.row; i++) {
         for (var j = 0; j < block.col; j++) {
             //var arrayIndex = block.Index(i, j);
-            var blockType = block.array[arrayIndex];
-            var useImg = block.type[Object.keys(block.type)[blockType]].img;
-            ctx.drawImage(useImg, blockX, blockY);
+            var blockType = block.type[Object.keys(block.type)[block.array[arrayIndex]]];
+            if (blockType.transparency == true)
+                ctx.drawImage(block.type.empty.img, blockX, blockY);
+            ctx.drawImage(blockType.img, blockX, blockY);
             blockX += block.w;
             arrayIndex++;
         }
