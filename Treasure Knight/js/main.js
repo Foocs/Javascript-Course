@@ -10,17 +10,17 @@ window.onload = function () {
     drawRect(0, 0, canvas.width, canvas.height, "black"); //loadscreen
     drawText("LOADING IMAGES", canvas.width / 2, canvas.height / 2, "white", "bold 50px Comic Sans");
 
-    loadImages();
+    loadImages();   
 }
 
 function startGame() {
 
     setupInput();
 
-    loadLevel(block.levelOne);
+    loadLevel(block.levels[block.currentLevel]);
 
-    //player.SetupInput(37, 38, 39, 40) // ArrowLeft, ArrowUp, ArrowRight, ArrowDown
-    player.SetupInput(65, 87, 68, 83); // A, W, D, S  
+    player.SetupInput(37, 38, 39, 40) // ArrowLeft, ArrowUp, ArrowRight, ArrowDown
+    //player.SetupInput(65, 87, 68, 83); // A, W, D, S  
 
     setInterval(update, 1000 / FPS);
 }
@@ -45,8 +45,8 @@ function drawAll() {
     drawBlocks();
     player.Draw();
     if (player.winTimer-- > 0) {
-        drawText("YOU WIN!", canvas.width / 2 - 2, canvas.height / 2 + 2, "black", "bold 50px Comic Sans"); // black offset
-        drawText("YOU WIN!", canvas.width / 2, canvas.height / 2, "black", "bold 50px Comic Sans");
+        drawText("You found the treasure!", canvas.width / 2 - 2, canvas.height / 2 + 2, "black", "bold 50px Comic Sans"); // black offset
+        drawText("You found the treasure!", canvas.width / 2, canvas.height / 2, "white", "bold 50px Comic Sans");
     }
 }
 
