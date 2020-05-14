@@ -1,4 +1,4 @@
-function drawBitmapCenteredWithAngle(pic, x, y, ang) {
+function drawCharacter(pic, x, y, ang) {
     ctx.save()
     ctx.translate(x, y);
     ctx.rotate(ang);

@@ -10,7 +10,7 @@ window.onload = function () {
     drawRect(0, 0, canvas.width, canvas.height, "black"); //loadscreen
     drawText("LOADING IMAGES", canvas.width / 2, canvas.height / 2, "white", "bold 50px Comic Sans");
 
-    loadImages();   
+    loadImages();
 }
 
 function startGame() {
@@ -60,7 +60,7 @@ function drawBlocks() {
             var blockType = block.type[Object.keys(block.type)[block.array[arrayIndex]]];
             if (blockType.transparency == true)
                 ctx.drawImage(block.type.empty.img, blockX, blockY);
-            ctx.drawImage(blockType.img, blockX, blockY);
+            ctx.drawImage(blockType.img, blockX + (block.w - blockType.img.width) / 2, blockY + (block.h - blockType.img.height) / 2);
             blockX += block.w;
             arrayIndex++;
         }
